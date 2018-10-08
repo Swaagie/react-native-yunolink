@@ -53,6 +53,6 @@ ReactNativeYunolinkCommand.args = [{
   description: 'repository to link'
 }];
 
-ReactNativeYunolinkCommand.description = 'Watch and copy repository files to get around React-Native Metro Bundler\'s inability to use symlinks.'
+ReactNativeYunolinkCommand.description = 'Sync Node.JS modules to get around Metro Bundler\'s inability to use symlinks.'
 
 module.exports = ReactNativeYunolinkCommand;
