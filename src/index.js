@@ -1,7 +1,7 @@
 const { Command, flags } = require('@oclif/command');
 const { exec } = require('child_process');
+const debug = require('debug')('rn-link');
 const chokidar = require('chokidar');
-const debug = require('debug');
 const path = require('path');
 
 class ReactNativeYunolinkCommand extends Command {
