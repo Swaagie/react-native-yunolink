@@ -1,0 +1,42 @@
+{
+  "name": "react-native-yunolink",
+  "description": "Workaround for symlinks in React Native ",
+  "version": "1.0.0",
+  "author": "Swaagie @Swaagie",
+  "bin": {
+    "rn-link": "./bin/run"
+  },
+  "bugs": "https://github.com/Swaagie/react-native-yunolink/issues",
+  "dependencies": {
+    "@oclif/command": "^1.5.2",
+    "@oclif/config": "^1.8.6",
+    "@oclif/plugin-help": "^2.1.2",
+    "chokidar": "^2.0.4"
+  },
+  "devDependencies": {
+    "@oclif/test": "^1.2.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/src"
+  ],
+  "homepage": "https://github.com/Swaagie/react-native-yunolink",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "bin": "rn-link"
+  },
+  "repository": "Swaagie/react-native-yunolink",
+  "scripts": {
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\""
+  }
+}
