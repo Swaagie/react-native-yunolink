@@ -16,9 +16,11 @@ Install the module globally.
 npm install -g react-native-yunolink
 ```
 
-If you installed the module as global you can use it directly from a terminal
+and execute it in the root of a repository where you want to use the targetted Node.JS module.
 
 ```bash
+rn-link [target]
+
 rn-link ../myModule
 ```
 
@@ -28,7 +30,7 @@ Or alternatively install the module as `devDependency`.
 npm install -D react-native-yunolink
 ```
 
-And use the module from your `package.json` by adding a `scripts` command.
+And watch and copy the module from your `package.json` by adding a `scripts` command.
 
 ```json
 "scripts": {
