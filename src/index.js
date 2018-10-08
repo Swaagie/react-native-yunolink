@@ -1,12 +1,13 @@
 const { Command, flags } = require('@oclif/command');
 const { exec } = require('child_process');
 const chokidar = require('chokidar');
+const debug = require('debug');
 const path = require('path');
 
 class ReactNativeYunolinkCommand extends Command {
   async run() {
     const { args } = this.parse(ReactNativeYunolinkCommand);
-    const source = path.resolve(args.target);
+    const source = path.join(path.resolve(args.target), path.sep);
     const target = path.join(process.cwd(), 'node_modules', require(path.join(source, 'package.json')).name);
     const watcher = chokidar.watch(source, {
       ignored: [
@@ -14,6 +15,7 @@ class ReactNativeYunolinkCommand extends Command {
         /(^|[\/\\])\../
       ]
     });
+
 
     /**
      * On any change or event execute rsync once.
@@ -43,6 +45,8 @@ class ReactNativeYunolinkCommand extends Command {
     //
     // Initialize once.
     //
+    debug(`Watching source: ${ source }`);
+    debug(`Syncing to target: ${ target }`);
     setup();
   }
 }
