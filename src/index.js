@@ -81,7 +81,7 @@ class ReactNativeYunolinkCommand extends Command {
     //
     fs.writeFileSync(metroConfig, stringify({
       ...config,
-      watchFolders: Array.from(new Set([ ...(config.watchFolders || []), sources ]))
+      watchFolders: Array.from(new Set([ ...(config.watchFolders || []), ...sources ]))
     }, null, 2));
 
     //
@@ -110,6 +110,10 @@ ReactNativeYunolinkCommand.args = [{
   required: true,
   description: 'One or multiple repositories to watch and sync'
 }];
+
+ReactNativeYunolinkCommand.flags = {
+  version: flags.version({ char: 'v' }),
+};
 
 ReactNativeYunolinkCommand.description = 'Sync Node.JS modules to get around Metro Bundler\'s inability to use symlinks.'
 
