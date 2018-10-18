@@ -16,12 +16,14 @@ Install the module globally.
 npm install -g react-native-yunolink
 ```
 
-and execute it in the root of a repository where you want to use the targetted Node.JS module.
+and execute it in the root of a repository where you want to use the targetted Node.JS module(s). It supports
+multiple targets by separating each path with a whitespace. In addition this will temporarily update the
+`watchFolders` property in `metro.config.js` to force Metro bundler to also watch your targetted modules.
 
 ```bash
-rn-link [target]
+rn-link [...targets]
 
-rn-link ../myModule
+rn-link ../myModule1 ../myModule2
 ```
 
 Or alternatively install the module as `devDependency`.
@@ -34,7 +36,7 @@ And watch and copy the module from your `package.json` by adding a `scripts` com
 
 ```json
 "scripts": {
-  "watch-myModule": "rn-link ../myModule"
+  "watch-modules": "rn-link ../myModule1 ../myModule2"
 }
 ```
 
@@ -43,4 +45,4 @@ Run it with `npm run watch-myModule`.
 # Commands
 
 There are not specific commands other than `-v` for the version or `-h` for help and a description. 
-Do make sure you always provide a `[target]` to `rn-link`.
+Do make sure you always provide a `[...targets]` to `rn-link`.
