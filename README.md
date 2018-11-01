@@ -1,7 +1,7 @@
 react-native-yunolink
 =====================
 
-Workaround for using symlinks in React Native 
+Workaround for using symlinks in React Native.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/react-native-yunolink.svg)](https://npmjs.org/package/react-native-yunolink)
@@ -42,7 +42,14 @@ And watch and copy the module from your `package.json` by adding a `scripts` com
 
 Run it with `npm run watch-myModule`.
 
-# Commands
+## Commands
 
 There are not specific commands other than `-v` for the version or `-h` for help and a description. 
 Do make sure you always provide a `[...targets]` to `rn-link`.
+
+## Module tree
+
+This module operates under the assumption `npm` or `yarn` dedupe `node_modules` to the root of your app. 
+The `node_modules` of the synced target will be excluded. This will prevent `@ProvidesModule` errors in metro
+bundler.
+

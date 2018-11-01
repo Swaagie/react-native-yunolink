@@ -62,6 +62,19 @@ function foreman(source) {
   }
 
   //
+  // Manually remove downstream files from the target, `rsync` only performs write operations.
+  //
+  watcher.on('unlink', function remove(file) {
+    file = path.resolve(target, file.replace(source, ''));
+
+    fs.unlink(file, function removed(error) {
+      if (error) {
+        debug(`Error removing file: ${ error.message }`);
+      }
+    });
+  });
+
+  //
   // Initialize
   //
   debug(`Watching source: ${ source }`);
