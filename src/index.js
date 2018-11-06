@@ -63,6 +63,15 @@ function foreman(source) {
   }
 
   //
+  // Manually remove downstream files from the target, `rsync` only performs write operations.
+  //
+  watcher.on('unlink', function remove(file) {
+    fs.unlink(path.resolve(target, file.replace(source, '')), function removed(error) {
+      if (error) debug(`Error removing file: ${ error.message }`);
+    });
+  });
+
+  //
   // Ensure all required target directories exist, `rsync` cannot handle creating multiple directories.
   //
   mkdirp(target, function created(error) {
