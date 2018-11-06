@@ -3,6 +3,7 @@ const stringify = require('safe-json-stringify');
 const { exec } = require('child_process');
 const debug = require('debug')('rn-link');
 const chokidar = require('chokidar');
+const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
 
@@ -71,11 +72,18 @@ function foreman(source) {
   });
 
   //
-  // Initialize
+  // Ensure all required target directories exist, `rsync` cannot handle creating multiple directories.
   //
-  debug(`Watching source: ${ source }`);
-  debug(`Syncing to target: ${ target }`);
-  setup();
+  mkdirp(target, function created(error) {
+    if (error) throw error;
+
+    //
+    // Initialize
+    //
+    debug(`Watching source: ${ source }`);
+    debug(`Syncing to target: ${ target }`);
+    setup();
+  });
 }
 
 class ReactNativeYunolinkCommand extends Command {
