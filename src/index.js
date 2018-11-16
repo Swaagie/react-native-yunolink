@@ -1,6 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const stringify = require('safe-json-stringify');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const debug = require('debug')('rn-link');
 const chokidar = require('chokidar');
 const mkdirp = require('mkdirp');
@@ -45,17 +45,9 @@ function foreman(source) {
 
   /**
    * On any change or event execute rsync once.
-   *
-   * @param {Error} error Error from `exec`.
-   * @param {String} stdout Output from stdout.
-   * @param {String} stderr Output from stderr.
    * @private
    */
-  function setup(error, stdout, stderr) {
-    if (error) throw error;
-    if (stdout && stdout.length) process.stdout.write(stdout);
-    if (stderr && stderr.length) process.stderr.write(stderr);
-
+  function setup() {
     watcher.once('all', execute);
   }
 
@@ -65,8 +57,24 @@ function foreman(source) {
    * @private
    */
   function execute() {
-    const excludes = ignored.reduce((exclude, ignore) =>  exclude + `--exclude="${ ignore }" `, '');
-    exec(`rsync -av --progress ${ excludes } ${ source } ${ target }`, setup);
+    const excludes = ignored.map(ignore => `--exclude="${ ignore }"`);
+    const child = spawn('rsync', 
+      ['-av', '--progress', ...excludes, source,  target ], {
+        stdio: ['inherit', 'inherit', 'inherit']
+      });
+
+    child.on('close', function (code) {
+      if (code !== 0) {
+        process.stderr.write(`rsync exited with ${ code }`);
+        process.exit(code);
+      }
+
+      setup();
+    });
+
+    child.on('error', function (error) {
+      throw error;
+    });
   }
 
   //
