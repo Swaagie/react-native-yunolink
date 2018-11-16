@@ -44,8 +44,11 @@ Run it with `npm run watch-myModule`.
 
 ## Commands
 
-There are not specific commands other than `-v` for the version or `-h` for help and a description. 
-Do make sure you always provide a `[...targets]` to `rn-link`.
+The CLI only has a single command available to start the module sync. If you need to ignore additional files or 
+folders pass a comma separated list to `-i` or `--ignore`. Ensure you always provide `[...targets]` to `rn-link`.
+
+In addition, `-v` and `-h` are available for version description and help.
+
 
 ## Module tree
 

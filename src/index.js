@@ -21,8 +21,17 @@ function tryRequire(path) {
   }
 }
 
+//
+// List of files and folders to exclude by default.
+//
+const ignored = [
+  `**${ path.sep }node_modules`,
+  `*${ path.sep }build`,
+  `.*`
+];
+
 /**
- * Orchestrate the watchig and syncing of files from source.
+ * Orchestrate watching and syncing of files from source.
  *
  * @param {String} source Absolute path to source
  * @private
@@ -30,10 +39,7 @@ function tryRequire(path) {
 function foreman(source) {
   const target = path.join(process.cwd(), 'node_modules', require(path.join(source, 'package.json')).name);
   const watcher = chokidar.watch(source, {
-    ignored: [
-      `**${ path.sep }node_modules${ path.sep }**`,
-      /(^|[\/\\])\../
-    ]
+    ignored
   });
 
 
@@ -59,7 +65,8 @@ function foreman(source) {
    * @private
    */
   function execute() {
-    exec(`rsync -av --progress --exclude=node_modules --exclude=.git ${ source } ${ target }`, setup);
+    const excludes = ignored.reduce((exclude, ignore) =>  exclude + `--exclude="${ ignore }" `, '');
+    exec(`rsync -av --progress ${ excludes } ${ source } ${ target }`, setup);
   }
 
   //
@@ -88,10 +95,15 @@ function foreman(source) {
 
 class ReactNativeYunolinkCommand extends Command {
   async run() {
-    const { argv } = this.parse(ReactNativeYunolinkCommand);
+    const { argv, flags } = this.parse(ReactNativeYunolinkCommand);
     const sources = argv.map(ref => path.join(path.resolve(ref), path.sep));
     const metroConfig = path.join(process.cwd(), 'metro.config.json');
     const config = tryRequire(metroConfig) || {};
+
+    //
+    // Add ignore folders to defaults.
+    //
+    ignored.push(...flags.ignore);
 
     //
     // Update watchFolders in the configuration to include all sources.
@@ -130,6 +142,12 @@ ReactNativeYunolinkCommand.args = [{
 
 ReactNativeYunolinkCommand.flags = {
   version: flags.version({ char: 'v' }),
+  ignore: flags.string({
+    char: 'i',
+    description: 'comma separated list of files and folders to ignore',
+    parse: input => input.split(','),
+    default: []
+  })
 };
 
 ReactNativeYunolinkCommand.description = 'Sync Node.JS modules to get around Metro Bundler\'s inability to use symlinks.'
