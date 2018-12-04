@@ -60,7 +60,8 @@ function foreman(source) {
     const excludes = ignored.map(ignore => `--exclude="${ ignore }"`);
     const child = spawn('rsync', 
       ['-av', '--progress', ...excludes, source,  target ], {
-        stdio: ['inherit', 'inherit', 'inherit']
+        stdio: ['inherit', 'inherit', 'inherit'],
+        shell: true
       });
 
     child.on('close', function (code) {
