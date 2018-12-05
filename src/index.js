@@ -58,23 +58,24 @@ function foreman(source) {
    */
   function execute() {
     const excludes = ignored.map(ignore => `--exclude="${ ignore }"`);
-    const child = spawn('rsync', 
-      ['-av', '--progress', ...excludes, source,  target ], {
-        stdio: ['inherit', 'inherit', 'inherit']
-      });
+    console.log('!!! would have synced:', JSON.stringify(['-av', '--progress', ...excludes, source,  target ]));
+    // const child = spawn('rsync', 
+    //   ['-av', '--progress', ...excludes, source,  target ], {
+    //     stdio: ['inherit', 'inherit', 'inherit']
+    //   });
 
-    child.on('close', function (code) {
-      if (code !== 0) {
-        process.stderr.write(`rsync exited with ${ code }`);
-        process.exit(code);
-      }
+    // child.on('close', function (code) {
+    //   if (code !== 0) {
+    //     process.stderr.write(`rsync exited with ${ code }`);
+    //     process.exit(code);
+    //   }
 
-      setup();
-    });
+    //   setup();
+    // });
 
-    child.on('error', function (error) {
-      throw error;
-    });
+    // child.on('error', function (error) {
+    //   throw error;
+    // });
   }
 
   //
