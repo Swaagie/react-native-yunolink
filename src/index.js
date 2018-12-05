@@ -60,12 +60,13 @@ function foreman(source) {
       args.push('--exclude', ignore);
       return args;
     }, []);
-    const child = spawn('rsync', 
-      ['-av', '--progress', ...excludes, source,  target ], {
+
+    const child = spawn('rsync',
+      ['-av', '--progress', ...excludes, source, target], {
         stdio: ['inherit', 'inherit', 'inherit']
       });
 
-    child.on('close', function (code) {
+    child.on('close', function close(code) {
       if (code !== 0) {
         process.stderr.write(`rsync exited with ${ code }`);
         process.exit(code);
@@ -74,7 +75,7 @@ function foreman(source) {
       setup();
     });
 
-    child.on('error', function (error) {
+    child.on('error', function malfunction(error) {
       throw error;
     });
   }
