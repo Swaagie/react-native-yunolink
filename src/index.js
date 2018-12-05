@@ -42,7 +42,6 @@ function foreman(source) {
     ignored
   });
 
-
   /**
    * On any change or event execute rsync once.
    * @private
@@ -57,25 +56,27 @@ function foreman(source) {
    * @private
    */
   function execute() {
-    const excludes = ignored.map(ignore => `--exclude="${ ignore }"`);
-    console.log('!!! would have synced:', JSON.stringify(['-av', '--progress', ...excludes, source,  target ]));
-    // const child = spawn('rsync', 
-    //   ['-av', '--progress', ...excludes, source,  target ], {
-    //     stdio: ['inherit', 'inherit', 'inherit']
-    //   });
+    const excludes = ignored.reduce((args, ignore) => {
+      args.push('--exclude', ignore);
+      return args;
+    }, []);
+    const child = spawn('rsync', 
+      ['-av', '--progress', ...excludes, source,  target ], {
+        stdio: ['inherit', 'inherit', 'inherit']
+      });
 
-    // child.on('close', function (code) {
-    //   if (code !== 0) {
-    //     process.stderr.write(`rsync exited with ${ code }`);
-    //     process.exit(code);
-    //   }
+    child.on('close', function (code) {
+      if (code !== 0) {
+        process.stderr.write(`rsync exited with ${ code }`);
+        process.exit(code);
+      }
 
-    //   setup();
-    // });
+      setup();
+    });
 
-    // child.on('error', function (error) {
-    //   throw error;
-    // });
+    child.on('error', function (error) {
+      throw error;
+    });
   }
 
   //
@@ -98,7 +99,8 @@ function foreman(source) {
     //
     debug(`Watching source: ${ source }`);
     debug(`Syncing to target: ${ target }`);
-    setup();
+
+    watcher.once('ready', execute);
   });
 }
 
