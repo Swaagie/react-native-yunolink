@@ -42,7 +42,6 @@ function foreman(source) {
     ignored
   });
 
-
   /**
    * On any change or event execute rsync once.
    *
@@ -66,7 +65,9 @@ function foreman(source) {
    */
   function execute() {
     const excludes = ignored.reduce((exclude, ignore) =>  exclude + `--exclude="${ ignore }" `, '');
-    exec(`rsync -av --progress ${ excludes } ${ source } ${ target }`, setup);
+    exec(`rsync -av --progress ${ excludes } ${ source } ${ target }`, {
+      maxBuffer: 1024e3
+    }, setup);
   }
 
   //
@@ -89,7 +90,8 @@ function foreman(source) {
     //
     debug(`Watching source: ${ source }`);
     debug(`Syncing to target: ${ target }`);
-    setup();
+
+    watcher.once('ready', execute);
   });
 }
 
