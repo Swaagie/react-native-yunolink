@@ -1,6 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const stringify = require('safe-json-stringify');
-const { spawn } = require('child_process');
+const { exec } = require('child_process');
 const debug = require('debug')('rn-link');
 const chokidar = require('chokidar');
 const mkdirp = require('mkdirp');
@@ -44,9 +44,17 @@ function foreman(source) {
 
   /**
    * On any change or event execute rsync once.
+   *
+   * @param {Error} error Error from `exec`.
+   * @param {String} stdout Output from stdout.
+   * @param {String} stderr Output from stderr.
    * @private
    */
-  function setup() {
+  function setup(error, stdout, stderr) {
+    if (error) throw error;
+    if (stdout && stdout.length) process.stdout.write(stdout);
+    if (stderr && stderr.length) process.stderr.write(stderr);
+
     watcher.once('all', execute);
   }
 
