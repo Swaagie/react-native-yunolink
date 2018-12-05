@@ -1,7 +1,7 @@
 {
   "name": "react-native-yunolink",
   "description": "Workaround for symlinks in React Native ",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "author": "Swaagie @Swaagie",
   "bin": {
     "rn-link": "./bin/run"
