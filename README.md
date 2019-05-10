@@ -44,15 +44,17 @@ Run it with `npm run watch-myModule`.
 
 ## Commands
 
-The CLI only has a single command available to start the module sync. If you need to ignore additional files or 
+The CLI only has a single command available to start the module sync. If you need to ignore additional files or
 folders pass a comma separated list to `-i` or `--ignore`. Ensure you always provide `[...targets]` to `rn-link`.
+
+If you want metro bundler to watch the linked folder for file changes and rebuild automatically, provide the `-w`
+flag. Watching files is only possible if the symlinked folder has no duplicate modules in `node_modules`.
 
 In addition, `-v` and `-h` are available for version description and help.
 
-
 ## Module tree
 
-This module operates under the assumption `npm` or `yarn` dedupe `node_modules` to the root of your app. 
+This module operates under the assumption `npm` or `yarn` dedupe `node_modules` to the root of your app.
 The `node_modules` of the synced target will be excluded. This will prevent `@ProvidesModule` errors in metro
 bundler.
 

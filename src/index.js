@@ -110,7 +110,7 @@ class ReactNativeYunolinkCommand extends Command {
     const { argv, flags } = this.parse(ReactNativeYunolinkCommand);
     const sources = argv.map(ref => path.join(path.resolve(ref), path.sep));
     const metroConfig = path.join(process.cwd(), 'metro.config.json');
-    const config = tryRequire(metroConfig) || {};
+    let config;
 
     //
     // Add ignore folders to defaults.
@@ -120,18 +120,24 @@ class ReactNativeYunolinkCommand extends Command {
     //
     // Update watchFolders in the configuration to include all sources.
     //
-    fs.writeFileSync(metroConfig, stringify({
-      ...config,
-      watchFolders: Array.from(new Set([ ...(config.watchFolders || []), ...sources ]))
-    }, null, 2));
+    if (flags.watch) {
+      config = tryRequire(metroConfig) || {};
+
+      fs.writeFileSync(metroConfig, stringify({
+        ...config,
+        watchFolders: Array.from(new Set([...(config.watchFolders || []), ...sources]))
+      }, null, 2));
+    }
 
     //
     // Restore the original Metro bundler configuration on exit.
     //
     process.once('SIGINT', function restore() {
-      debug('Restoring configuration', config);
+      if (flags.watch) {
+        debug('Restoring configuration', config);
+        fs.writeFileSync(metroConfig, stringify(config, null, 2));
+      }
 
-      fs.writeFileSync(metroConfig, stringify(config, null, 2));
       process.exit();
     });
 
@@ -154,6 +160,10 @@ ReactNativeYunolinkCommand.args = [{
 
 ReactNativeYunolinkCommand.flags = {
   version: flags.version({ char: 'v' }),
+  watch: flags.boolean({
+    char: 'w',
+    description: 'enable metro bundler watcher by adding the folder(s) to `watchFolders`'
+  }),
   ignore: flags.string({
     char: 'i',
     description: 'comma separated list of files and folders to ignore',
@@ -162,6 +172,6 @@ ReactNativeYunolinkCommand.flags = {
   })
 };
 
-ReactNativeYunolinkCommand.description = 'Sync Node.JS modules to get around Metro Bundler\'s inability to use symlinks.'
+ReactNativeYunolinkCommand.description = 'Sync Node.JS modules to get around Metro Bundler\'s inability to use symlinks.';
 
 module.exports = ReactNativeYunolinkCommand;
